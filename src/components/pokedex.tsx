@@ -7,6 +7,7 @@ import { Button } from "./button";
 import { LedDisplay } from "./led-display";
 
 import "./pokedex.css";
+import { Pokemon } from "models";
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -109,6 +110,25 @@ export function Pokedex() {
   const { pokemon: selectedPokemon } = usePokemon(pokemonList[i]);
   const { pokemon: nextPokemon } = usePokemon(pokemonList[i + 1]);
 
+  const [team, setTeam] = useState<Pokemon[]>([]);
+  const [viewingTeam, setViewingTeam] = useState(false);
+
+  const viewTeam = () => {
+    setViewingTeam(true);
+  };
+
+  const viewPokedex = () => {
+    setViewingTeam(false);
+  };
+
+  const addToTeam = () => {
+    if (team.length < 6) {
+      setTeam([...team, selectedPokemon as Pokemon]);
+    } else {
+      alert('Your team is full!');
+    }
+  };
+
   const prev = () => {
     resetTransition();
     if (i === 0) {
@@ -128,58 +148,78 @@ export function Pokedex() {
   return (
     <div className={c("pokedex", `pokedex-${theme}`)}>
       <div className="panel left-panel">
-        <div className="screen main-screen">
-          {selectedPokemon && (
-            <img
-              className={c(
-                "sprite",
-                "obfuscated",
-                ready && "ready",
-                ready && `ready--${randomMode()}`
-              )}
-              src={selectedPokemon.sprites.front_default}
-              alt={selectedPokemon.name}
-            />
-          )}
-        </div>
-        <div className="screen name-display">
-          <div
-            className={c(
-              "name",
-              "obfuscated",
-              ready && "ready",
-              ready && `ready--${randomMode()}`
-            )}
-          >
-            {selectedPokemon?.name}
+        {viewingTeam ? (
+          <div className="flex flex-wrap gap-4">
+            {team.map((pokemon, index) => (
+              <div key={index} className="bg-white rounded-2xl border-4 border-[#750808]">
+                <img
+                  className="sprite"
+                  src={pokemon.sprites.front_default}
+                  alt={pokemon.name}
+                />
+                <div className="name">{pokemon.name}</div>
+              </div>
+            ))}
           </div>
-        </div>
-        {selectedPokemon && (
-          <div className="screen w-[320px] px-4 py-2">
-            <div className="flex gap-3 justify-center">
-              {selectedPokemon?.types.map((type, index) => (
-                <div 
-                  key={index} className={c(
-                    "text-sm rounded-2xl px-2 py-1 flex gap-2 items-center",
+        ) : (
+          <>
+            <div className="screen main-screen">
+              {selectedPokemon && (
+                <img
+                  className={c(
+                    "sprite",
                     "obfuscated",
                     ready && "ready",
                     ready && `ready--${randomMode()}`
                   )}
-                  style={{ backgroundColor: types[type.type.name].color }}
-                >
-                  <img src={types[type.type.name].image} alt={capitalize(type.type.name)} className="w-4 h-4" />
-                  <span className="text-white">{type.type.name}</span>
+                  src={selectedPokemon.sprites.front_default}
+                  alt={selectedPokemon.name}
+                />
+              )}
+              <Button label="add" onClick={addToTeam}>
+                Add to Team
+              </Button>
+            </div>
+            <div className="screen name-display">
+              <div
+                className={c(
+                  "name",
+                  "obfuscated",
+                  ready && "ready",
+                  ready && `ready--${randomMode()}`
+                )}
+              >
+                {selectedPokemon?.name}
+              </div>
+            </div>
+            {selectedPokemon && (
+              <div className="screen w-[320px] px-4 py-2">
+                <div className="flex gap-3 justify-center">
+                  {selectedPokemon?.types.map((type, index) => (
+                    <div 
+                      key={index} className={c(
+                        "text-sm rounded-2xl px-2 py-1 flex gap-2 items-center",
+                        "obfuscated",
+                        ready && "ready",
+                        ready && `ready--${randomMode()}`
+                      )}
+                      style={{ backgroundColor: types[type.type.name].color }}
+                    >
+                      <img src={types[type.type.name].image} alt={capitalize(type.type.name)} className="w-4 h-4" />
+                      <span className="text-white">{type.type.name}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            
-            <h3 className="text-lg font-bold mt-4">Abilities</h3>
-            <div className="flex gap-4">
-              {selectedPokemon.abilities.map((ability, index) => (
-                <div key={index} className="text-sm">{ability.ability.name}</div>
-              ))}
-            </div>
-          </div>
+                
+                <h3 className="text-lg font-bold mt-4">Abilities</h3>
+                <div className="flex gap-4">
+                  {selectedPokemon.abilities.map((ability, index) => (
+                    <div key={index} className="text-sm">{ability.ability.name}</div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
       <div className="panel right-panel">
@@ -205,6 +245,17 @@ export function Pokedex() {
         <div className="controls">
           <Button label="prev" onClick={prev} />
           <Button label="next" onClick={next} />
+        </div>
+        <div className="controls">
+          {viewingTeam ? (
+            <Button label="View Pokedex" onClick={viewPokedex}>
+              View Pokedex
+            </Button>
+          ) : (
+            <Button label="View Team" onClick={viewTeam}>
+              View Team
+            </Button>
+          )}
         </div>
       </div>
     </div>

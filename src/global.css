@@ -568,6 +568,10 @@ video {
   width: 320px;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .items-center {
   align-items: center;
 }
@@ -590,6 +594,20 @@ video {
 
 .rounded-2xl {
   border-radius: 1rem;
+}
+
+.border-4 {
+  border-width: 4px;
+}
+
+.border-\[\#750808\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(117 8 8 / var(--tw-border-opacity));
+}
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
 .px-2 {

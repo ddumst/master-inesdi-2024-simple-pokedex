@@ -1,5 +1,6 @@
 .button {
-  width: 60px;
+  width: fit-content;
+  min-width: 60px;
   height: 40px;
   background-color: var(--grey);
   border-radius: 10%;
@@ -9,6 +10,7 @@
   align-items: center;
   color: #fff;
   cursor: pointer;
+  padding: 0 1rem;
 }
 
 .button:hover {
